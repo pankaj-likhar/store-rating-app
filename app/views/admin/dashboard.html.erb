@@ -1,0 +1,77 @@
+<div class="container mt-4">
+  <h1>System Admin Dashboard</h1>
+  
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Users</h5>
+          <p class="card-text display-4"><%= @total_users %></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Stores</h5>
+          <p class="card-text display-4"><%= @total_stores %></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Ratings</h5>
+          <p class="card-text display-4"><%= @total_ratings %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Store Management</h5>
+          <%= link_to "Add New Store", new_store_path, class: "btn btn-primary" %>
+          <%= link_to "View All Stores", stores_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">User List</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% User.all.each do |user| %>
+                <tr>
+                  <td><%= user.name %></td>
+                  <td><%= user.email %></td>
+                  <td><%= user.role %></td>
+                  <td>
+                    <%= link_to "Edit", edit_user_path(user), class: "btn btn-sm btn-warning" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

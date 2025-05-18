@@ -1,0 +1,78 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <h1><%= @store.name %></h1>
+      <p><strong>Average Rating:</strong> <%= @store.average_rating.to_f.round(1) %>/5</p>
+
+      <p><strong>Email:</strong> <%= @store.email %></p>
+      <p><strong>Address:</strong> <%= @store.address %></p>
+      
+      <% if current_user&.system_admin? %>
+        <div class="mb-4">
+          <%= link_to 'Edit Store', edit_store_path(@store), class: "btn btn-warning me-2" %>
+
+          <%= button_to 'Delete Store', @store, method: :delete, data: { confirm: 'Are you sure?' },
+              class: "btn btn-danger me-2", form: { class: "d-inline" } %>
+
+          <%= link_to 'Back to Stores', stores_path, class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+
+      
+      <h3 class="mt-4">Leave a Rating</h3>
+      <% if current_user && !current_user.store_owner? && !@store.ratings.exists?(user: current_user) %>
+        <%= form_with(model: [@store, @rating], local: true) do |form| %>
+          <div class="form-group">
+            <%= form.label :value, "Rating (1-5)" %>
+            <%= form.select :value, (1..5).map { |n| [n, n] }, {}, class: "form-control" %>
+          </div>
+          
+          <div class="form-group">
+            <%= form.label :comment %>
+            <%= form.text_area :comment, class: "form-control" %>
+          </div>
+          
+          <div class="actions">
+            <%= form.submit "Submit Rating", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      <% elsif current_user && @store.ratings.exists?(user: current_user) %>
+        <div class="alert alert-info">You have already rated this store.</div>
+      <% elsif current_user && current_user.store_owner? %>
+        <div class="alert alert-info">Store owners cannot rate stores.</div>
+      <% else %>
+        <div class="alert alert-info">Please <%= link_to "sign in", new_user_session_path %> to leave a rating.</div>
+      <% end %>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Ratings</h3>
+        </div>
+        <div class="card-body">
+          <% if @ratings.any? %>
+            <% @ratings.each do |rating| %>
+              <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                  <strong><%= rating.user.name %></strong>
+                  <span><%= rating.value %>/5</span>
+                </div>
+                 <% if current_user == rating.user %>
+      <%= link_to 'Edit Rating', edit_store_rating_path(@store, rating), class: "btn btn-sm btn-outline-primary mt-2" %>
+    <% end %>
+                <p><%= rating.comment %></p>
+                <small class="text-muted"><%= rating.created_at.strftime("%B %d, %Y") %></small>
+                <hr>
+              </div>
+              
+            <% end %>
+            
+          <% else %>
+            <p class="text-center">No ratings yet.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

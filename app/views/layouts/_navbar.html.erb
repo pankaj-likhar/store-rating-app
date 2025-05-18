@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <%= link_to "Store Rating App", root_path, class: "navbar-brand" %>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto">
+        <% if current_user&.system_admin? %>
+          <li class="nav-item">
+            <%= link_to "Admin Dashboard", admin_dashboard_path, class: "nav-link" %>
+          </li>
+        <% end %>
+
+        <% if user_signed_in? %>
+          <li class="nav-item">
+            <%= link_to "Stores", stores_path, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+
+      <ul class="navbar-nav">
+        <% if user_signed_in? %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+              Welcome, <%= current_user.name %>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <%= link_to "Edit Profile", edit_user_registration_path, class: "dropdown-item" %>
+              <div class="dropdown-divider"></div>
+              <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
+            </div>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to "Sign In", new_user_session_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Sign Up", new_user_registration_path, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<% flash.each do |key, message| %>
+  <% bootstrap_class = case key.to_sym
+     when :notice then 'alert-success'
+     when :alert  then 'alert-danger'
+     when :error  then 'alert-danger'
+     when :success then 'alert-success'
+     when :warning then 'alert-warning'
+     else 'alert-info'
+  end %>
+
+  <div class="container mt-2">
+    <div class="alert <%= bootstrap_class %> alert-dismissible fade show" role="alert">
+      <%= message %>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+<% end %>
